@@ -1,9 +1,9 @@
 .bgc {
-    background-color: green;
+    background-color: white;
 }
 
 .yello {
-  background-color:white;
+  background-color:rgb(191, 49, 49);
   width: 500px;
   padding-left:25px;
   padding-right: 50px;
