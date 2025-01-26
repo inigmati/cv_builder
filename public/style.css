@@ -1,0 +1,13 @@
+.bgc {
+    background-color: green;
+}
+
+.yello {
+  background-color:white;
+  width: 500px;
+  padding-left:25px;
+  padding-right: 50px;
+  padding-top: 100px;
+  padding-bottom: 25px;
+  margin:auto;
+}
