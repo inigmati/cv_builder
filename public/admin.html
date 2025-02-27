@@ -11,31 +11,23 @@
     <div class="container">
         <h1>Admin Panel</h1>
         
-<h2>Edit Website Content</h2>
-<form action="/update" method="POST">
-    <label>Home:</label>
-    <textarea name="home"></textarea><br>
-    <label>About Me:</label>
-    <textarea name="about"></textarea><br>
-    <label>Skills:</label>
-    <textarea name="skills"></textarea><br>
-    <label>Links:</label>
-    <textarea name="links"></textarea><br>
-    <label>Contact:</label>
-    <textarea name="contact"></textarea><br>
-    <label>Achievements:</label>
-    <textarea name="achievements"></textarea><br>
-    <button type="submit">Save Changes</button>
-</form>
-
-<h2>Change Password</h2>
-<form action="/change-password" method="POST">
-    <label>Old Password:</label>
-    <input type="password" name="old_password" required><br>
-    <label>New Password:</label>
-    <input type="password" name="new_password" required><br>
-    <button type="submit">Change Password</button>
-</form>
+    <h2>Edit Pages</h2>
+    <form action="/update" method="POST">
+        <p><label>Home: <textarea name="home">[Your Home Content]</textarea></label></p>
+        <p><label>About Me: <textarea name="about">[Your About Content]</textarea></label></p>
+        <p><label>Skills: <textarea name="skills">[Your Skills Content]</textarea></label></p>
+        <p><label>Links: <textarea name="links">[Your Links Content]</textarea></label></p>
+        <p><label>Contact: <textarea name="contact">[Your Contact Content]</textarea></label></p>
+        <p><label>Achievements: <textarea name="achievements">[Your Achievements Content]</textarea></label></p>
+        <p><input type="submit" value="Save Changes"></p>
+    </form>
+    
+    <h2>Change Password</h2>
+    <form action="/change-password" method="POST">
+        <p><label>Old Password: <input type="password" name="old_password"></label></p>
+        <p><label>New Password: <input type="password" name="new_password"></label></p>
+        <p><input type="submit" value="Change Password"></p>
+    </form>
 
     </div>
 </body>
