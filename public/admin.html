@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav><a href="index.html">Home</a> | <a href="about.html">About Me</a> | <a href="skills.html">Skills</a> | <a href="links.html">Links</a> | <a href="contact.html">Contact</a> | <a href="achievements.html">Achievements</a></nav>
+    <div class="container">
+        <h1>Admin Panel</h1>
+        
+<h2>Edit Website Content</h2>
+<form action="/update" method="POST">
+    <label>Home:</label>
+    <textarea name="home"></textarea><br>
+    <label>About Me:</label>
+    <textarea name="about"></textarea><br>
+    <label>Skills:</label>
+    <textarea name="skills"></textarea><br>
+    <label>Links:</label>
+    <textarea name="links"></textarea><br>
+    <label>Contact:</label>
+    <textarea name="contact"></textarea><br>
+    <label>Achievements:</label>
+    <textarea name="achievements"></textarea><br>
+    <button type="submit">Save Changes</button>
+</form>
+
+<h2>Change Password</h2>
+<form action="/change-password" method="POST">
+    <label>Old Password:</label>
+    <input type="password" name="old_password" required><br>
+    <label>New Password:</label>
+    <input type="password" name="new_password" required><br>
+    <button type="submit">Change Password</button>
+</form>
+
+    </div>
+</body>
+</html>
