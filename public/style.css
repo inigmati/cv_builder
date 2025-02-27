@@ -1,29 +1,29 @@
 .bgc {
-    background-color: white;
+  background-color: white;
 }
 
 .yello {
-  background-color:yellow;
-  width: 500px;
-  padding-left:25px;
-  padding-right: 50px;
-  padding-top: 100px;
-  padding-bottom: 25px;
-  margin:auto;
+background-color:yellow;
+width: 500px;
+padding-left:25px;
+padding-right: 50px;
+padding-top: 100px;
+padding-bottom: 25px;
+margin:auto;
 }
 
 .responsive-img {
-  max-width: 100%; /* Ensures image resizes within its container */
-  height: auto; /* Maintains aspect ratio */
-  display: block; /* Removes bottom space issue */
-  margin: 0 auto; /* Centers the image */
-  border-radius: 8px; /* Optional: Adds rounded corners */
+max-width: 100%; /* Ensures image resizes within its container */
+height: auto; /* Maintains aspect ratio */
+display: block; /* Removes bottom space issue */
+margin: 0 auto; /* Centers the image */
+border-radius: 8px; /* Optional: Adds rounded corners */
 }
 
 /* Media query for smaller screens */
 @media (max-width: 768px) {
-  .responsive-img {
-      width: 90%; /* Makes image slightly smaller on mobile */
-      height: 90%;
-  }
+.responsive-img {
+    width: 90%; /* Makes image slightly smaller on mobile */
+    height: 90%;
+}
 }
