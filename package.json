@@ -10,7 +10,8 @@
     "node": "18.x"
   },
   "dependencies": {
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "express-session": "^1.17.3"
   },
   "keywords": [],
   "author": "",
