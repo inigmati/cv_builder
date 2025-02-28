@@ -8,7 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(express.static('public'));
+app.use('/cv', express.static(path.join(__dirname, 'public/cv')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({ secret: 'your_secret_key', resave: false, saveUninitialized: true }));
 
@@ -22,33 +22,51 @@ if (fs.existsSync(credentialsPath)) {
     fs.writeFileSync(credentialsPath, JSON.stringify(credentials));
 }
 
+// Serve homepage (outside CV section)
+app.get('/', (req, res) => {
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Welcome</title>
+            <link rel="stylesheet" href="/cv/style.css">
+        </head>
+        <body>
+            <h1>Welcome</h1>
+            <a href="/cv/index.html">Click for CV</a>
+        </body>
+        </html>
+    `);
+});
+
 // Serve login page
-app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+app.get('/cv/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public/cv', 'login.html'));
 });
 
 // Handle login request
-app.post('/login', (req, res) => {
+app.post('/cv/login', (req, res) => {
     const { userid, password } = req.body;
     if (userid === credentials.userid && password === credentials.password) {
         req.session.user = userid;
-        res.redirect('/admin');
+        res.redirect('/cv/admin');
     } else {
-        res.send('Invalid credentials! <a href="/login">Try again</a>');
+        res.send('Invalid credentials! <a href="/cv/login">Try again</a>');
     }
 });
 
-//Serve admin page if logged in
-app.get('/admin', (req, res) => {
+// Serve admin page if logged in
+app.get('/cv/admin', (req, res) => {
     if (!req.session.user) {
-        return res.redirect('/login');
+        return res.redirect('/cv/login');
     }
-    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+    res.sendFile(path.join(__dirname, 'public/cv', 'admin.html'));
 });
-
 
 // Handle content updates
-app.post('/update', (req, res) => {
+app.post('/cv/update', (req, res) => {
     if (!req.session.user) {
         return res.status(403).send('Unauthorized');
     }
@@ -63,14 +81,14 @@ app.post('/update', (req, res) => {
     };
 
     for (const [file, content] of Object.entries(updates)) {
-        fs.writeFileSync(path.join(__dirname, 'public', file), content);
+        fs.writeFileSync(path.join(__dirname, 'public/cv', file), content);
     }
 
-    res.send('Content updated! <a href="/admin">Go back</a>');
+    res.send('Content updated! <a href="/cv/admin">Go back</a>');
 });
 
 // Handle password change
-app.post('/change-password', (req, res) => {
+app.post('/cv/change-password', (req, res) => {
     if (!req.session.user) {
         return res.status(403).send('Unauthorized');
     }
@@ -78,18 +96,18 @@ app.post('/change-password', (req, res) => {
     const { old_password, new_password } = req.body;
 
     if (old_password !== credentials.password) {
-        return res.send('Incorrect old password! <a href="/admin">Try again</a>');
+        return res.send('Incorrect old password! <a href="/cv/admin">Try again</a>');
     }
 
     credentials.password = new_password;
     fs.writeFileSync(credentialsPath, JSON.stringify(credentials));
-    res.send('Password changed successfully! <a href="/admin">Go back</a>');
+    res.send('Password changed successfully! <a href="/cv/admin">Go back</a>');
 });
 
 // Logout route
-app.get('/logout', (req, res) => {
+app.get('/cv/logout', (req, res) => {
     req.session.destroy();
-    res.send('Logged out! <a href="/login">Login again</a>');
+    res.send('Logged out! <a href="/cv/login">Login again</a>');
 });
 
 // Function to generate updated HTML content
@@ -100,16 +118,16 @@ function generateHTML(title, content) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/cv/style.css">
 </head>
 <body>
     <nav>
-        <a href="index.html">Home</a> |
-        <a href="about.html">About Me</a> |
-        <a href="skills.html">Skills</a> |
-        <a href="links.html">Links</a> |
-        <a href="contact.html">Contact</a> |
-        <a href="achievements.html">Achievements</a>
+        <a href="/cv/index.html">Home</a> |
+        <a href="/cv/about.html">About Me</a> |
+        <a href="/cv/skills.html">Skills</a> |
+        <a href="/cv/links.html">Links</a> |
+        <a href="/cv/contact.html">Contact</a> |
+        <a href="/cv/achievements.html">Achievements</a>
     </nav>
     <div class="container">
         <h1>${title}</h1>
