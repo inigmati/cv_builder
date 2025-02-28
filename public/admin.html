@@ -7,27 +7,21 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <nav>
-        <a href="index.html">Home</a> |
-        <a href="about.html">About Me</a> |
-        <a href="skills.html">Skills</a> |
-        <a href="links.html">Links</a> |
-        <a href="contact.html">Contact</a> |
-        <a href="achievements.html">Achievements</a>
-    </nav>
+    <nav><a href="index.html">Home</a> | <a href="about.html">About Me</a> | <a href="skills.html">Skills</a> | <a href="links.html">Links</a> | <a href="contact.html">Contact</a> | <a href="achievements.html">Achievements</a></nav>
     <div class="container">
         <h1>Admin Panel</h1>
         
-        <h2>Edit Pages</h2>
-        <form action="/update" method="POST">
-            <p><label>Home: <textarea name="home">{{content.home}}</textarea></label></p>
-            <p><label>About Me: <textarea name="about">{{content.about}}</textarea></label></p>
-            <p><label>Skills: <textarea name="skills">{{content.skills}}</textarea></label></p>
-            <p><label>Links: <textarea name="links">{{content.links}}</textarea></label></p>
-            <p><label>Contact: <textarea name="contact">{{content.contact}}</textarea></label></p>
-            <p><label>Achievements: <textarea name="achievements">{{content.achievements}}</textarea></label></p>
-            <p><input type="submit" value="Save Changes"></p>
-        </form>
+    <h2>Edit Pages</h2>
+    <form action="/update" method="POST">
+        <p><label>Home: <textarea name="home">[Your Home Content]</textarea></label></p>
+        <p><label>About Me: <textarea name="about">[Your About Content]</textarea></label></p>
+        <p><label>Skills: <textarea name="skills">[Your Skills Content]</textarea></label></p>
+        <p><label>Links: <textarea name="links">[Your Links Content]</textarea></label></p>
+        <p><label>Contact: <textarea name="contact">[Your Contact Content]</textarea></label></p>
+        <p><label>Achievements: <textarea name="achievements">[Your Achievements Content]</textarea></label></p>
+        <p><input type="submit" value="Save Changes"></p>
+    </form>
+
     </div>
 </body>
 </html>

@@ -1,4 +1,4 @@
 {
-    "username": "1",
-    "password": "1"
+    "username": "admin",
+    "password": "hashed_password_here"
 }
