@@ -38,19 +38,14 @@ app.post('/login', (req, res) => {
     }
 });
 
-// Serve admin page if logged in
-// app.get('/admin', (req, res) => {
-//     if (!req.session.user) {
-//         return res.redirect('/login');
-//     }
-//     res.sendFile(path.join(__dirname, 'public', 'admin.html'));
-// });
+//Serve admin page if logged in
+app.get('/admin', (req, res) => {
+    if (!req.session.user) {
+        return res.redirect('/login');
+    }
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
 
-app.get("/admin", async (req, res) => {
-    const content = await getContentFromDB(); // Fetch saved content
-    res.render("admin", { content });
-  });
-  
 
 // Handle content updates
 app.post('/update', (req, res) => {
