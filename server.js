@@ -43,8 +43,44 @@ app.get('/admin', (req, res) => {
     if (!req.session.user) {
         return res.redirect('/login');
     }
-    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+
+    const contentPath = path.join(__dirname, 'content.json');
+    let content = {};
+
+    if (fs.existsSync(contentPath)) {
+        content = JSON.parse(fs.readFileSync(contentPath, 'utf8'));
+    }
+
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Admin Panel</title>
+            <link rel="stylesheet" href="style.css">
+        </head>
+        <body>
+            <nav><a href="index.html">Home</a> | <a href="about.html">About Me</a> | <a href="skills.html">Skills</a> | <a href="links.html">Links</a> | <a href="contact.html">Contact</a> | <a href="achievements.html">Achievements</a></nav>
+            <div class="container">
+                <h1>Admin Panel</h1>
+                
+                <h2>Edit Pages</h2>
+                <form action="/update" method="POST">
+                    <p><label>Home: <textarea name="home">${content.home || ''}</textarea></label></p>
+                    <p><label>About Me: <textarea name="about">${content.about || ''}</textarea></label></p>
+                    <p><label>Skills: <textarea name="skills">${content.skills || ''}</textarea></label></p>
+                    <p><label>Links: <textarea name="links">${content.links || ''}</textarea></label></p>
+                    <p><label>Contact: <textarea name="contact">${content.contact || ''}</textarea></label></p>
+                    <p><label>Achievements: <textarea name="achievements">${content.achievements || ''}</textarea></label></p>
+                    <p><input type="submit" value="Save Changes"></p>
+                </form>
+            </div>
+        </body>
+        </html>
+    `);
 });
+
 
 // Handle content updates
 app.post('/update', (req, res) => {
@@ -52,18 +88,19 @@ app.post('/update', (req, res) => {
         return res.status(403).send('Unauthorized');
     }
 
-    const updates = {
-        'index.html': generateHTML('Home', req.body.home),
-        'about.html': generateHTML('About Me', req.body.about),
-        'skills.html': generateHTML('Skills', req.body.skills),
-        'links.html': generateHTML('Links', req.body.links),
-        'contact.html': generateHTML('Contact', req.body.contact),
-        'achievements.html': generateHTML('Achievements', req.body.achievements),
-    };
+    const contentPath = path.join(__dirname, 'content.json');
 
-    for (const [file, content] of Object.entries(updates)) {
-        fs.writeFileSync(path.join(__dirname, 'public', file), content);
+    // Read existing content
+    let currentContent = {};
+    if (fs.existsSync(contentPath)) {
+        currentContent = JSON.parse(fs.readFileSync(contentPath, 'utf8'));
     }
+
+    // Merge new updates with existing content
+    const updatedContent = { ...currentContent, ...req.body };
+
+    // Save the updated content
+    fs.writeFileSync(contentPath, JSON.stringify(updatedContent, null, 2));
 
     res.send('Content updated! <a href="/admin">Go back</a>');
 });
