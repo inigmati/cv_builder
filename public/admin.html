@@ -11,17 +11,40 @@
     <div class="container">
         <h1>Admin Panel</h1>
         
-    <h2>Edit Pages</h2>
-    <form action="/update" method="POST">
-        <p><label>Home: <textarea name="home">[Your Home Content]</textarea></label></p>
-        <p><label>About Me: <textarea name="about">[Your About Content]</textarea></label></p>
-        <p><label>Skills: <textarea name="skills">[Your Skills Content]</textarea></label></p>
-        <p><label>Links: <textarea name="links">[Your Links Content]</textarea></label></p>
-        <p><label>Contact: <textarea name="contact">[Your Contact Content]</textarea></label></p>
-        <p><label>Achievements: <textarea name="achievements">[Your Achievements Content]</textarea></label></p>
-        <p><input type="submit" value="Save Changes"></p>
-    </form>
-
+        <h2>Edit Pages</h2>
+        <form id="updateForm">
+            <p><label>Home: <textarea id="home" name="home"></textarea></label></p>
+            <p><label>About Me: <textarea id="about" name="about"></textarea></label></p>
+            <p><label>Skills: <textarea id="skills" name="skills"></textarea></label></p>
+            <p><label>Links: <textarea id="links" name="links"></textarea></label></p>
+            <p><label>Contact: <textarea id="contact" name="contact"></textarea></label></p>
+            <p><label>Achievements: <textarea id="achievements" name="achievements"></textarea></label></p>
+            <p><button type="submit">Save Changes</button></p>
+        </form>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            fetch("/get-content")
+                .then(response => response.json())
+                .then(data => {
+                    Object.keys(data).forEach(key => {
+                        document.getElementById(key).value = data[key];
+                    });
+                });
+
+            document.getElementById("updateForm").addEventListener("submit", function(event) {
+                event.preventDefault();
+                const formData = {};
+                new FormData(this).forEach((value, key) => formData[key] = value);
+                fetch("/update", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(formData)
+                }).then(response => response.json()).then(data => {
+                    alert(data.message);
+                });
+            });
+        });
+    </script>
 </body>
 </html>
