@@ -8,7 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use('/cv', express.static('public'));
+app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({ secret: 'your_secret_key', resave: false, saveUninitialized: true }));
 
@@ -24,7 +24,7 @@ if (fs.existsSync(credentialsPath)) {
 
 // Serve login page
 app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'cv', 'login.html'));
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
 // Handle login request
@@ -32,14 +32,14 @@ app.post('/login', (req, res) => {
     const { userid, password } = req.body;
     if (userid === credentials.userid && password === credentials.password) {
         req.session.user = userid;
-        res.redirect('/cv/admin');
+        res.redirect('/admin');
     } else {
         res.send('Invalid credentials! <a href="/login">Try again</a>');
     }
 });
 
 //Serve admin page if logged in
-app.get('/cv/admin', (req, res) => {
+app.get('/admin', (req, res) => {
     if (!req.session.user) {
         return res.redirect('/login');
     }
@@ -48,7 +48,7 @@ app.get('/cv/admin', (req, res) => {
 
 
 // Handle content updates
-app.post('/cv/update', (req, res) => {
+app.post('/update', (req, res) => {
     if (!req.session.user) {
         return res.status(403).send('Unauthorized');
     }
@@ -70,7 +70,7 @@ app.post('/cv/update', (req, res) => {
 });
 
 // Handle password change
-app.post('/cv/change-password', (req, res) => {
+app.post('/change-password', (req, res) => {
     if (!req.session.user) {
         return res.status(403).send('Unauthorized');
     }
@@ -87,7 +87,7 @@ app.post('/cv/change-password', (req, res) => {
 });
 
 // Logout route
-app.get('/cv/logout', (req, res) => {
+app.get('/logout', (req, res) => {
     req.session.destroy();
     res.send('Logged out! <a href="/login">Login again</a>');
 });
