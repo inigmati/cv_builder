@@ -81,6 +81,15 @@ app.get('/admin', (req, res) => {
     `);
 });
 
+app.get('/reset-password', (req, res) => {
+    const credentialsPath = path.join(__dirname, 'credentials.json');
+    const newPassword = "newpassword123"; // Change this to your desired password
+
+    let credentials = { userid: "admin", password: newPassword };
+    fs.writeFileSync(credentialsPath, JSON.stringify(credentials, null, 2));
+
+    res.send(`Password reset successful! Your new password is: ${newPassword} <a href="/login">Login</a>`);
+});
 
 // Handle content updates
 app.post('/update', (req, res) => {
