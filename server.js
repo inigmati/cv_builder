@@ -8,7 +8,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use('/cv', express.static(path.join(__dirname, 'public/cv')));
+// app.use('/cv', express.static(path.join(__dirname, 'public/cv')));
+app.use('/cv', express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({ secret: 'your_secret_key', resave: false, saveUninitialized: true }));
 
