@@ -27,13 +27,13 @@ app.post('/login', (req, res) => {
     const { userid, password } = req.body;
 
     if (userid === credentials.userid && password === credentials.password) {
-        req.session.user = userid;  // ✅ Store user session correctly
-        req.session.save(err => {   // ✅ Ensure session is saved before redirect
+        req.session.user = userid;  // Store user session correctly
+        req.session.save(err => {   // Ensure session is saved before redirect
             if (err) {
                 console.error("Session save error:", err);
                 return res.status(500).send("Internal Server Error");
             }
-            res.redirect('/admin');  // ✅ Redirect to admin after successful login
+            res.redirect('/admin');  // Redirect to admin after successful login
         });
     } else {
         res.status(401).send("Invalid credentials. <a href='/login.html'>Try again</a>");
@@ -47,8 +47,16 @@ function requireLogin(req, res, next) {
     next();
 }
 
+app.use(express.static('public', {
+    setHeaders: (res, path) => {
+        if (path.endsWith('admin.html')) {
+            res.status(403).send('Forbidden');
+        }
+    }
+}));
+
 app.get('/admin', requireLogin, (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+    res.sendFile(path.join(__dirname, 'private', 'admin.html'));
 });
 
 app.post('/update', requireLogin, (req, res) => {
