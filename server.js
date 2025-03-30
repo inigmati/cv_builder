@@ -53,7 +53,7 @@ app.get('/admin', (req, res) => {
 // Handle content updates
 app.post('/update', (req, res) => {
     if (!req.session.user) {
-        return res.status(403).send('Unauthorized');
+        return res.status(403).send('Unauthorized and notoriaous');
     }
 
     const updates = {
