@@ -42,18 +42,10 @@ app.post('/login', (req, res) => {
 
 function requireLogin(req, res, next) {
     if (!req.session.user) {
-        return res.redirect('/login.html');  // ✅ Redirect to login if not authenticated
+        return res.redirect('/login.html');  // Redirect to login if not authenticated
     }
     next();
 }
-
-app.use(express.static('public', {
-    setHeaders: (res, path) => {
-        if (path.endsWith('admin.html')) {
-            res.status(403).send('Forbidden');
-        }
-    }
-}));
 
 app.get('/admin', requireLogin, (req, res) => {
     res.sendFile(path.join(__dirname, 'private', 'admin.html'));
@@ -169,6 +161,15 @@ function generateHTML(title, content) {
 </body>
 </html>`;
 }
+
+app.use(express.static('public', {
+    setHeaders: (res, path) => {
+        if (path.endsWith('admin.html')) {
+            res.status(403).send('Forbidden');
+        }
+    }
+}));
+
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
