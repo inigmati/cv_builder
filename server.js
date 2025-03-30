@@ -36,9 +36,38 @@ app.post('/login', (req, res) => {
             res.redirect('/admin');  // ✅ Redirect to admin after successful login
         });
     } else {
-        res.status(401).send("Invalid credentials. <a href='/cv/login.html'>Try again</a>");
+        res.status(401).send("Invalid credentials. <a href='/login.html'>Try again</a>");
     }
 });
+
+function requireLogin(req, res, next) {
+    if (!req.session.user) {
+        return res.redirect('/login.html');  // ✅ Redirect to login if not authenticated
+    }
+    next();
+}
+
+app.get('/admin', requireLogin, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
+app.post('/update', requireLogin, (req, res) => {
+    const updates = {
+        'index.html': generateHTML('Home', req.body.home),
+        'about.html': generateHTML('About Me', req.body.about),
+        'skills.html': generateHTML('Skills', req.body.skills),
+        'links.html': generateHTML('Links', req.body.links),
+        'contact.html': generateHTML('Contact', req.body.contact),
+        'achievements.html': generateHTML('Achievements', req.body.achievements),
+    };
+
+    for (const [file, content] of Object.entries(updates)) {
+        fs.writeFileSync(path.join(__dirname, 'public', file), content);
+    }
+
+    res.send('Content updated! <a href="/admin">Go back</a>');
+});
+
 
 
 // Handle login request
