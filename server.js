@@ -34,26 +34,28 @@ function requireLogin(req, res, next) {
     next();
 }
 
-// Serve login page
+// Serve admin page only if logged in
+app.get('/admin', requireLogin, (req, res) => {
+    res.sendFile(path.join(__dirname, 'private', 'admin.html'));
+});
+
+// Handle login
 app.post('/login', (req, res) => {
     const { userid, password } = req.body;
     if (userid === credentials.userid && password === credentials.password) {
         req.session.user = userid;
-        req.session.save(err => {
-            if (err) {
-                console.error("Session save error:", err);
-                return res.status(500).send("Internal Server Error");
-            }
-            res.redirect('/admin');
-        });
+        res.redirect('/admin');
     } else {
         res.status(401).send("Invalid credentials. <a href='/login.html'>Try again</a>");
     }
 });
 
-// Serve admin page if logged in
-app.get('/admin', requireLogin, (req, res) => {
-    res.sendFile(path.join(__dirname, 'private', 'admin.html'));
+// Prevent direct access to admin.html
+app.use((req, res, next) => {
+    if (req.path === '/admin.html') {
+        return res.status(403).send('Forbidden');
+    }
+        next();
 });
 
 // Handle content updates
@@ -74,18 +76,8 @@ app.post('/update', requireLogin, (req, res) => {
     res.send('Content updated! <a href="/admin">Go back</a>');
 });
 
-// Handle password change
-app.post('/change-password', requireLogin, (req, res) => {
-    const { old_password, new_password } = req.body;
-
-    if (old_password !== credentials.password) {
-        return res.send('Incorrect old password! <a href="/admin">Try again</a>');
-    }
-
-    credentials.password = new_password;
-    fs.writeFileSync(credentialsPath, JSON.stringify(credentials));
-    res.send('Password changed successfully! <a href="/admin">Go back</a>');
-});
+// Serve public files
+app.use(express.static('public'));
 
 // Logout route
 app.get('/logout', (req, res) => {
