@@ -41,11 +41,8 @@ app.post('/login', (req, res) => {
 //Serve admin page if logged in
 app.get('/admin', (req, res) => {
     if (!req.session.user) {
-        return res.status(403).send('invalid url! <a href="/login">To login</a>');
-        // return res.redirect('/login');
-        // alert('You must be logged in to access this page.');
+        return res.sendFile(path.join(__dirname, 'public', 'login.html'));
     }
-    alert('You are logged in.');
     res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
@@ -53,7 +50,7 @@ app.get('/admin', (req, res) => {
 // Handle content updates
 app.post('/update', (req, res) => {
     if (!req.session.user) {
-        return res.status(403).send('Unauthorized and notoriaous');
+        return res.status(403).send('Unauthorized');
     }
 
     const updates = {
