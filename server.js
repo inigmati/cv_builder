@@ -41,6 +41,7 @@ app.post('/login', (req, res) => {
 //Serve admin page if logged in
 app.get('/admin', (req, res) => {
     if (!req.session.user) {
+        res.send('invalid url! <a href="/login">To login</a>');
         return res.redirect('/login');
         alert('You must be logged in to access this page.');
     }
