@@ -8,9 +8,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(session({ secret: 'your_secret_key', resave: false, saveUninitialized: true }));
+app.use(session({
+    secret: 'your_secret_key',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false, httpOnly: true, maxAge: 600000 }
+}));
 
 // Load credentials
 const credentialsPath = path.join(__dirname, 'credentials.json');
@@ -22,35 +26,37 @@ if (fs.existsSync(credentialsPath)) {
     fs.writeFileSync(credentialsPath, JSON.stringify(credentials));
 }
 
+// Authentication middleware
+function requireLogin(req, res, next) {
+    if (!req.session.user) {
+        return res.redirect('/login.html');
+    }
+    next();
+}
+
 // Serve login page
 app.post('/login', (req, res) => {
     const { userid, password } = req.body;
-
     if (userid === credentials.userid && password === credentials.password) {
-        req.session.user = userid;  // Store user session correctly
-        req.session.save(err => {   // Ensure session is saved before redirect
+        req.session.user = userid;
+        req.session.save(err => {
             if (err) {
                 console.error("Session save error:", err);
                 return res.status(500).send("Internal Server Error");
             }
-            res.redirect('/admin');  // Redirect to admin after successful login
+            res.redirect('/admin');
         });
     } else {
         res.status(401).send("Invalid credentials. <a href='/login.html'>Try again</a>");
     }
 });
 
-function requireLogin(req, res, next) {
-    if (!req.session.user) {
-        return res.redirect('/login.html');  // Redirect to login if not authenticated
-    }
-    next();
-}
-
+// Serve admin page if logged in
 app.get('/admin', requireLogin, (req, res) => {
     res.sendFile(path.join(__dirname, 'private', 'admin.html'));
 });
 
+// Handle content updates
 app.post('/update', requireLogin, (req, res) => {
     const updates = {
         'index.html': generateHTML('Home', req.body.home),
@@ -68,56 +74,8 @@ app.post('/update', requireLogin, (req, res) => {
     res.send('Content updated! <a href="/admin">Go back</a>');
 });
 
-
-
-// Handle login request
-app.post('/login', (req, res) => {
-    const { userid, password } = req.body;
-    if (userid === credentials.userid && password === credentials.password) {
-        req.session.user = userid;
-        res.redirect('/admin');
-    } else {
-        res.send('Invalid credentials! <a href="/login">Try again</a>');
-    }
-});
-
-//Serve admin page if logged in
-app.get('/admin', (req, res) => {
-    if (!req.session.user) {
-        return res.sendFile(path.join(__dirname, 'public', 'login.html'));
-    }
-    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
-});
-
-
-// Handle content updates
-app.post('/update', (req, res) => {
-    if (!req.session.user) {
-        return res.status(403).send('Unauthorized');
-    }
-
-    const updates = {
-        'index.html': generateHTML('Home', req.body.home),
-        'about.html': generateHTML('About Me', req.body.about),
-        'skills.html': generateHTML('Skills', req.body.skills),
-        'links.html': generateHTML('Links', req.body.links),
-        'contact.html': generateHTML('Contact', req.body.contact),
-        'achievements.html': generateHTML('Achievements', req.body.achievements),
-    };
-
-    for (const [file, content] of Object.entries(updates)) {
-        fs.writeFileSync(path.join(__dirname, 'public', file), content);
-    }
-
-    res.send('Content updated! <a href="/admin">Go back</a>');
-});
-
 // Handle password change
-app.post('/change-password', (req, res) => {
-    if (!req.session.user) {
-        return res.status(403).send('Unauthorized');
-    }
-
+app.post('/change-password', requireLogin, (req, res) => {
     const { old_password, new_password } = req.body;
 
     if (old_password !== credentials.password) {
@@ -132,7 +90,7 @@ app.post('/change-password', (req, res) => {
 // Logout route
 app.get('/logout', (req, res) => {
     req.session.destroy();
-    res.send('Logged out! <a href="/login">Login again</a>');
+    res.send('Logged out! <a href="/login.html">Login again</a>');
 });
 
 // Function to generate updated HTML content
@@ -162,15 +120,10 @@ function generateHTML(title, content) {
 </html>`;
 }
 
-app.use(express.static('public', {
-    setHeaders: (res, path) => {
-        if (path.endsWith('admin.html')) {
-            res.status(403).send('Forbidden');
-        }
-    }
-}));
+// Serve static files from the public directory
+app.use(express.static('public'));
 
-
+// Start the server
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
