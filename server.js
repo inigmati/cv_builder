@@ -45,6 +45,7 @@ app.get('/admin', (req, res) => {
         return res.redirect('/login');
         alert('You must be logged in to access this page.');
     }
+    alert('You are logged in.');
     res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
