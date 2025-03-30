@@ -23,9 +23,23 @@ if (fs.existsSync(credentialsPath)) {
 }
 
 // Serve login page
-app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+app.post('/login', (req, res) => {
+    const { userid, password } = req.body;
+
+    if (userid === credentials.userid && password === credentials.password) {
+        req.session.user = userid;  // ✅ Store user session correctly
+        req.session.save(err => {   // ✅ Ensure session is saved before redirect
+            if (err) {
+                console.error("Session save error:", err);
+                return res.status(500).send("Internal Server Error");
+            }
+            res.redirect('/admin');  // ✅ Redirect to admin after successful login
+        });
+    } else {
+        res.status(401).send("Invalid credentials. <a href='/cv/login.html'>Try again</a>");
+    }
 });
+
 
 // Handle login request
 app.post('/login', (req, res) => {
