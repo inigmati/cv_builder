@@ -102,7 +102,7 @@ function generateHTML(title, content) {
         <a href="skills.html">Skills</a> |
         <a href="links.html">Links</a> |
         <a href="contact.html">Contact</a> |
-        <a href="achievements.html">Achievements</a>
+        <a href="achievements.html">Achievements</a> 
     </nav>
     <div class="container">
         <h1>${title}</h1>
