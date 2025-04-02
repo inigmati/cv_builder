@@ -66,7 +66,7 @@ app.post('/update', requireLogin, (req, res) => {
         'skills.html': generateHTML('Skills', req.body.skills),
         'links.html': generateHTML('Links', req.body.links),
         'contact.html': generateHTML('Contact', req.body.contact),
-        'achievements.html': generateHTML('Achievements', req.body.achievements),
+        // 'achievements.html': generateHTML('Achievements', req.body.achievements),
     };
 
     for (const [file, content] of Object.entries(updates)) {

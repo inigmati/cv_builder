@@ -3,6 +3,6 @@
     "about": "[A short paragraph about yourself]",
     "skills": "[Skill 1], [Skill 2], [Skill 3]",
     "links": "[GitHub], [LinkedIn]",
-    "contact": "[your.email@example.com], [Your Phone]",
-    "achievements": "[Achievement 1], [Achievement 2]"
+    "contact": "[your.email@example.com], [Your Phone]"
+    // "achievements": "[Achievement 1], [Achievement 2]"
 }
